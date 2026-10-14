@@ -1,0 +1,87 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # GitHub Releases へのアップロードに必要
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1. フロントエンド (Vite) のビルド
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      # 2. バックエンドの準備とテスト
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      # 3. PyInstaller で単一 .exe をビルド (frontend/dist を同梱)
+      - name: Build executable
+        run: |
+          if (-not (Test-Path assets/icon.ico)) { python scripts/make_icon.py }
+          pyinstaller dropmix.spec --noconfirm --clean
+
+      - name: Smoke test executable
+        run: |
+          $p = Start-Process -FilePath dist/DropMix.exe -ArgumentList "--smoke-test" -Wait -PassThru
+          Get-Content "$env:LOCALAPPDATA/DropMix/logs/dropmix.log" -ErrorAction SilentlyContinue
+          if ($p.ExitCode -ne 0) { throw "smoke test failed (exit $($p.ExitCode))" }
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DropMix-${{ github.sha }}
+          path: dist/DropMix.exe
+          if-no-files-found: error
+
+      # 4. タグ (v*) の Push 時は GitHub Releases に自動アップロード
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/DropMix.exe
+          generate_release_notes: true

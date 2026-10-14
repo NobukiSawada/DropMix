@@ -1,0 +1,7 @@
+# DropMix 実行に必要なライブラリ
+fastapi>=0.115,<1.0
+uvicorn>=0.30,<1.0
+python-multipart>=0.0.18
+pymupdf>=1.25.5
+pillow>=11.0
+pywebview>=6.0

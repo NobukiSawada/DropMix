@@ -1,0 +1,4 @@
+# 開発・テスト・ビルド用
+pytest>=8.0
+httpx>=0.27
+pyinstaller>=6.10

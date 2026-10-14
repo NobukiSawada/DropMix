@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+/* 白基調 + 緑アクセントのテーマ (shadcn/ui 互換のトークン) */
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #14231a;
+  --color-muted: #f4f7f5;
+  --color-muted-foreground: #64748b;
+  --color-border: #e3ebe6;
+  --color-input: #d9e4dd;
+  --color-ring: #22c55e;
+  --color-primary: #16a34a;
+  --color-primary-hover: #15803d;
+  --color-primary-foreground: #ffffff;
+  --color-accent: #ecfdf3;
+  --color-accent-foreground: #166534;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+
+  --font-sans: "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo, system-ui, sans-serif;
+
+  --animate-progress: progress-indeterminate 1.2s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.15s ease-out;
+
+  @keyframes progress-indeterminate {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(250%);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+    overflow: hidden;
+  }
+  input,
+  textarea {
+    user-select: text;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #cfdcd4;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #a7bfb0;
+  }
+}
