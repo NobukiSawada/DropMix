@@ -22,3 +22,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# Docs (ローカル専用)
+docs/
