@@ -203,6 +203,8 @@ git push origin v1.0.0
 
 ---
 
-## ライセンスについて
+## ライセンス
 
-PyMuPDF は **AGPL-3.0**（または Artifex の商用ライセンス）で提供されています。DropMix を配布する場合は AGPL の条件（ソースコードの公開など）に従うか、商用ライセンスを取得してください。
+DropMix は [GNU General Public License v3.0](LICENSE) で公開しています。
+
+PDF 処理に使っている [PyMuPDF](https://github.com/pymupdf/PyMuPDF) は **AGPL-3.0** で提供されており、配布する `DropMix.exe` にも含まれています（GPL-3.0 第13条により、AGPL-3.0 のライブラリと組み合わせることができます）。DropMix を改変して配布する場合は、GPL-3.0 と AGPL-3.0 の条件（ソースコードの公開など）に従ってください。
